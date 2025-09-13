@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Alive - Lectura Bíblica Interactiva</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#8B7355">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Bible Alive">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/css/styles.css" as="style">
+    <link rel="preload" href="/js/app.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/styles.css">
+    
+    <!-- Icons -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="theme-light">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <h2>Bible Alive</h2>
+        <p>Cargando tu experiencia bíblica...</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        <!-- Navigation Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button id="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1 class="app-title">Bible Alive</h1>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                    <span class="icon-theme"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Bible Alive</h2>
+                <button id="sidebar-close" class="sidebar-close" aria-label="Cerrar menú">&times;</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#home" class="nav-link active" data-section="home">
+                    <span class="icon-home"></span> Inicio
+                </a></li>
+                <li><a href="#read" class="nav-link" data-section="read">
+                    <span class="icon-book"></span> Leer Biblia
+                </a></li>
+                <li><a href="#plans" class="nav-link" data-section="plans">
+                    <span class="icon-calendar"></span> Planes de Lectura
+                </a></li>
+                <li><a href="#audio" class="nav-link" data-section="audio">
+                    <span class="icon-audio"></span> Audio Biblia
+                </a></li>
+                <li><a href="#bookmarks" class="nav-link" data-section="bookmarks">
+                    <span class="icon-bookmark"></span> Favoritos
+                </a></li>
+                <li><a href="#notes" class="nav-link" data-section="notes">
+                    <span class="icon-note"></span> Mis Notas
+                </a></li>
+                <li><a href="#profile" class="nav-link" data-section="profile">
+                    <span class="icon-user"></span> Perfil
+                </a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home-section" class="content-section active">
+                <div class="container">
+                    <div class="verse-of-day">
+                        <h2>Versículo del Día</h2>
+                        <div id="daily-verse" class="daily-verse-content">
+                            <div class="verse-text loading">Cargando versículo del día...</div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>Acciones Rápidas</h3>
+                        <div class="action-grid">
+                            <button class="action-card" data-action="continue-reading">
+                                <span class="icon-book"></span>
+                                <span>Continuar Leyendo</span>
+                            </button>
+                            <button class="action-card" data-action="start-plan">
+                                <span class="icon-calendar"></span>
+                                <span>Iniciar Plan</span>
+                            </button>
+                            <button class="action-card" data-action="play-audio">
+                                <span class="icon-audio"></span>
+                                <span>Escuchar Audio</span>
+                            </button>
+                            <button class="action-card" data-action="search">
+                                <span class="icon-search"></span>
+                                <span>Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Actividad Reciente</h3>
+                        <div id="recent-items" class="activity-list">
+                            <!-- Contenido dinámico -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bible Reading Section -->
+            <section id="read-section" class="content-section">
+                <div class="container">
+                    <div class="reading-controls">
+                        <div class="bible-selector-container">
+                            <!-- Book Selector -->
+                            <div class="selector-group">
+                                <button id="book-selector-btn" class="bible-selector-btn">
+                                    <span class="selector-label">Libro</span>
+                                    <span id="selected-book" class="selector-value">Seleccionar libro</span>
+                                    <span class="selector-arrow">&#9660;</span>
+                                </button>
+                                <div id="book-dropdown" class="bible-dropdown">
+                                    <div class="dropdown-search">
+                                        <input type="text" id="book-search" placeholder="Buscar libro..." />
+                                    </div>
+                                    <div class="dropdown-sections">
+                                        <div class="dropdown-section">
+                                            <h4 class="section-title">Antiguo Testamento</h4>
+                                            <div id="old-testament-books" class="books-grid"></div>
+                                        </div>
+                                        <div class="dropdown-section">
+                                            <h4 class="section-title">Nuevo Testamento</h4>
+                                            <div id="new-testament-books" class="books-grid"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chapter Selector -->
+                            <div class="selector-group">
+                                <button id="chapter-selector-btn" class="bible-selector-btn" disabled>
+                                    <span class="selector-label">Capítulo</span>
+                                    <span id="selected-chapter" class="selector-value">--</span>
+                                    <span class="selector-arrow">&#9660;</span>
+                                </button>
+                                <div id="chapter-dropdown" class="bible-dropdown">
+                                    <div id="chapters-grid" class="chapters-grid"></div>
+                                </div>
+                            </div>
+
+                            <!-- Version Selector -->
+                            <div class="selector-group">
+                                <button id="version-selector-btn" class="bible-selector-btn">
+                                    <span class="selector-label">Versión</span>
+                                    <span id="selected-version" class="selector-value">RVR1960</span>
+                                    <span class="selector-arrow">&#9660;</span>
+                                </button>
+                                <div id="version-dropdown" class="bible-dropdown">
+                                    <div class="version-section">
+                                        <h4 class="section-title">Español</h4>
+                                        <div class="version-note">Temporalmente no disponible</div>
+                                    </div>
+                                    <div class="version-section">
+                                        <h4 class="section-title">English</h4>
+                                        <div class="versions-list">
+                                            <div class="version-item" data-version="en-kjv">
+                                                <div class="version-name">King James Version</div>
+                                                <div class="version-abbr">KJV</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reading-options">
+                            <button id="font-size-toggle" class="option-btn" title="Tamaño de texto">
+                                <span class="icon-text"></span>
+                            </button>
+                            <button id="audio-toggle" class="option-btn" title="Reproducir audio">
+                                <span class="icon-audio"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="bible-content" class="bible-reader">
+                        <div class="reader-placeholder">
+                            <p>Selecciona un libro y capítulo para comenzar a leer.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reading Plans Section -->
+            <section id="plans-section" class="content-section">
+                <div class="container">
+                    <h2>Planes de Lectura</h2>
+                    <div id="plans-list" class="plans-grid">
+                        <!-- Contenido dinámico -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audio Section -->
+            <section id="audio-section" class="content-section">
+                <div class="container">
+                    <h2>Audio Biblia</h2>
+                    <div class="audio-player">
+                        <div class="player-info">
+                            <h3 id="current-passage">Selecciona un pasaje</h3>
+                            <p id="current-version">Versión</p>
+                        </div>
+                        <div class="player-controls">
+                            <button id="prev-btn" class="control-btn">⏮️</button>
+                            <button id="play-pause-btn" class="control-btn play-btn">▶️</button>
+                            <button id="next-btn" class="control-btn">⏭️</button>
+                        </div>
+                        <div class="player-progress">
+                            <input type="range" id="progress-bar" class="progress-slider" min="0" max="100" value="0">
+                            <div class="time-display">
+                                <span id="current-time">0:00</span>
+                                <span id="total-time">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookmarks Section -->
+            <section id="bookmarks-section" class="content-section">
+                <div class="container">
+                    <h2>Favoritos</h2>
+                    <div id="bookmarks-list" class="bookmarks-grid">
+                        <!-- Contenido dinámico -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notes Section -->
+            <section id="notes-section" class="content-section">
+                <div class="container">
+                    <h2>Mis Notas</h2>
+                    <div id="notes-list" class="notes-grid">
+                        <!-- Contenido dinámico -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile-section" class="content-section">
+                <div class="container">
+                    <h2>Mi Perfil</h2>
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <h3>Días Leyendo</h3>
+                            <span class="stat-number">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Capítulos Leídos</h3>
+                            <span class="stat-number">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Notas Creadas</h3>
+                            <span class="stat-number">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Action Menu -->
+        <div class="fab-container">
+            <button id="fab-main" class="fab-main" aria-label="Acciones rápidas">
+                <span class="icon-plus"></span>
+            </button>
+            <div class="fab-menu">
+                <button class="fab-item" data-action="add-note" title="Agregar nota">
+                    <span class="icon-note"></span>
+                </button>
+                <button class="fab-item" data-action="add-bookmark" title="Agregar favorito">
+                    <span class="icon-bookmark"></span>
+                </button>
+                <button class="fab-item" data-action="highlight" title="Resaltar">
+                    <span class="icon-highlight"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Notes/Highlights -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modal-body">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/js/app.js"></script>
+    <script src="/js/bible-reader.js"></script>
+    <script src="/js/bible-selectors.js"></script>
+    <script src="/js/audio-player.js"></script>
+    <script src="/js/storage.js"></script>
+    <script src="/js/sw-register.js"></script>
+</body>
+</html>
